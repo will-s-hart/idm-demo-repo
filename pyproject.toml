@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "idmdemo"
+requires-python = ">=3.11"
+version = "0.0.0"
+
+[tool.pixi.workspace]
+channels = ["conda-forge", "bioconda"]
+platforms = ["linux-64", "linux-aarch64", "osx-arm64", "osx-64", "win-64"]
+
+[tool.pixi.dependencies]
+matplotlib = "*"
+numpy = "*"
+pandas = "*"
+scipy = "*"
+
+[tool.pixi.pypi-dependencies]
+idmdemo = { path = ".", editable = true }
+
+[tool.pixi.feature.dev.dependencies]
+ruff = "*"
+ipykernel = "*"
+pandas-stubs = "*"
+pytest = "*"
+snakemake = "*"
+ty = "*"
+
+[tool.pixi.environments]
+default = { features = ["dev"] }
+
+[tool.pixi.feature.dev.tasks]
+lint = "ruff check"
+format = "ruff check --select I --fix && ruff format"
+typecheck = "ty check"
+test = "pytest"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Scripts are run as modules from the repo root (`python -m scripts.<name>`), which the src
+# layout's editable install doesn't put on sys.path; do so here so tests can import them too.
+pythonpath = ["."]
+
+[tool.ruff.lint]
+extend-select = ["I"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/idmdemo/**"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/idmdemo"]
