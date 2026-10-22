@@ -228,15 +228,3 @@ __marimo__/
 # Claude Code (personal, gitignored)
 CLAUDE.local.md
 .claude/settings.local.json
-
-# LaTeX build artefacts (slides)
-slides/*.aux
-slides/*.log
-slides/*.out
-slides/*.fdb_latexmk
-slides/*.fls
-slides/*.nav
-slides/*.snm
-slides/*.toc
-slides/*.vrb
-slides/*.synctex.gz

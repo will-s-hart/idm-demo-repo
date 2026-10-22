@@ -37,11 +37,11 @@ pixi run snakemake --cores 1 --forceall
 
 ## Slides
 
-The talk is a Beamer deck, [`slides/slides.tex`](slides/slides.tex), and the compiled
-[`slides/slides.pdf`](slides/slides.pdf) is committed alongside it. Rebuilding it needs
-`latexmk` and `pdflatex` from a TeX distribution (MacTeX, TeX Live), which pixi does not
-provide:
+The talk is a Beamer deck in the Oxford Maths theme, [`slides/main.tex`](slides/main.tex), and
+the compiled [`slides/main.pdf`](slides/main.pdf) is committed alongside it. Rebuilding it
+needs `latexmk`, `pdflatex` and `bibtex` from a TeX distribution (MacTeX, TeX Live), which
+pixi does not provide:
 
 ```bash
-latexmk -pdf -cd slides/slides.tex
+slides/build.sh
 ```

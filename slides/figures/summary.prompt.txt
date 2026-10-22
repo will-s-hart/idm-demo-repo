@@ -1,0 +1,107 @@
+Generated with the built-in image_gen tool.
+Asset: summary.png
+
+Use case: infographic-diagram
+Asset type: a single high-resolution landscape infographic to fill the body of the final "Summary" slide in an Oxford scientific computing talk. Generate a wide image with an aspect ratio approximately 2.35:1, ideally 3072 by 1312 pixels. All content must fit in the image.
+Audience: infectious disease modellers seeking immediately useful scientific computing and AI coding advice.
+Primary request: an elegant illustrated guide to reliable research code, built around four connected stages of a research workbench. Make it useful enough to photograph and refer to later.
+Style: polished editorial science illustration with crisp clean outlines, restrained flat shading, accurate perfectly readable sans-serif typography, pure white background. A single coherent composition, NOT a dashboard, NOT a grid of boxed cards. No gradients or heavy shadows. Small narrative illustrations should make the concepts memorable. Use navy #002147 for headings and linework, teal #00798C for code and process, pale blue #E8EEF5 for subtle object fills, orange #E67E22 for human judgment, green for validation. Match a restrained Oxford academic slide.
+Composition: large top headline. Below, four evenly spaced illustrated stations across the width, each with a prominent short numbered heading, a useful mid-sized illustration, and three left-aligned lines of advice beneath. A thin process line connects the four illustrations. Below the stages a continuous subtle pale-blue foundation strip with four matching small symbols and labels, showing these practices support the whole workflow. A short orange-emphasised concluding sentence at the bottom. Use the width effectively with minimal outer margins, ample internal whitespace, and large text suitable for projection. No separate top title such as "Summary".
+Illustrations:
+1 Specify: an open research notebook with a simple model diagram, a units annotation and a researcher pencil.
+2 Implement: a laptop with minimal readable code-like strokes and a small AI assistant working alongside a human hand. Show AI as an assistant.
+3 Validate: a magnifying glass comparing a model curve with independent reference points, alongside a test checkmark. Curves are conceptual, with no numerical claims.
+4 Reproduce: a compact connected path of a data file, a computation, a figure and an archived research package.
+Foundation symbols: branching version history, a locked package/environment, a gear with checkmark, a README/instruction document.
+Render exactly the following text, with no additional words, no gibberish code labels, no invented citations, no logos, no watermark:
+Top headline: "Delegate only what you can check"
+Stage 1 heading: "1  Specify"
+Stage 1 advice, separate lines:
+"Assumptions and units"
+"Expected behaviour"
+"Independent checks"
+Stage 2 heading: "2  Implement"
+Stage 2 advice, separate lines:
+"Small, reviewable changes"
+"Clear context for AI"
+"Plan larger tasks first"
+Stage 3 heading: "3  Validate"
+Stage 3 advice, separate lines:
+"Known answers and limiting cases"
+"Seeded RNGs and tolerances"
+"Read diffs and inspect plots"
+Stage 4 heading: "4  Reproduce"
+Stage 4 advice, separate lines:
+"One command: data to figures"
+"Record inputs and parameters"
+"Archive the exact version"
+Foundation labels:
+"Git history"
+"Locked environment"
+"Automated checks"
+"README + instructions"
+Bottom sentence: "Protect sensitive data. Understand every line you publish."
+Text is the important content: use large sharp type, and make all advice equally readable. Avoid tiny captions, overcrowding, decorative badges, UI panels and photographic realism.
+
+Local refinement prompt:
+Use case: text-localization. Edit only the orange concluding sentence at the very bottom of this infographic. It currently has an erroneous raised orange apostrophe-like mark immediately after the word "Understand". Remove that stray mark and cleanly typeset the entire orange sentence in the same bold sans-serif font, size, colour and position, exactly as follows: "Protect sensitive data. Understand every line you publish." No apostrophe, accent, quotation marks or other marks around "Understand". Keep every other element of the image unchanged: all other text, diagrams, colours, spacing, layout, aspect ratio and image dimensions. This is a very small local typography correction only.
+
+
+v2
+==
+Generated from scratch with the built-in image_gen tool.
+Asset: summary.png
+Final raster: 1774 x 887 pixels (2:1).
+
+Use case: infographic-diagram
+Asset type: a single high-resolution landscape infographic filling the body of the final slide of an Oxford scientific computing talk, which has no separate slide title. Aspect ratio 2:1, ideally 3072 by 1536 pixels. All content must fit in the image.
+Audience: infectious disease modellers seeking immediately useful scientific computing and AI coding advice.
+Primary request: an elegant illustrated guide to reliable research code, built around four connected stages of a research workbench. Make it useful enough to photograph and refer to later.
+Style: polished editorial science illustration with crisp clean outlines, restrained flat shading, accurate perfectly readable sans-serif typography, pure white background. A single coherent composition, NOT a dashboard, NOT a grid of boxed cards. No gradients or heavy shadows. Each illustration is one or two simple objects, drawn large and uncluttered: no handwriting, equations, axis labels, legends or code text inside illustrations. Use navy #002147 for headings and linework, teal #00798C for code and process, pale blue #E8EEF5 for subtle object fills, orange #E67E22 for human judgment, green #208E4C for validation. Match a restrained Oxford academic slide.
+Composition: large top headline. Below, four evenly spaced illustrated stations across the width, each with a prominent short numbered heading, a mid-sized illustration, and three left-aligned lines of advice beneath. Identical thin teal arrows connect the four illustrations; nothing else sits between the stations. Below the stations, a pale-blue foundation band runs the full width, with the small word "FOUNDATIONS" at its left. It holds four evenly spaced symbol-and-label pairs that are NOT joined by any lines or arrows, showing that these practices support every stage. A short bold orange concluding sentence at the bottom. Use the width effectively with minimal outer margins, ample internal whitespace, and large text suitable for projection.
+Illustrations:
+1 Plan: an open notebook showing a simple box-and-arrow compartment diagram and a short checklist of three ticked lines (no words).
+2 Implement: a laptop with abstract code-like strokes, with a small friendly AI assistant beside it pointing at the screen. Show AI as an assistant to a human, without drawing hands or faces.
+3 Validate: a simple chart in which a smooth teal curve passes exactly through a few navy reference dots (a numerical result matching a known answer), with a small green check mark built into the chart's corner. Conceptual, with no numerical claims.
+4 Reproduce: a compact connected path of a data file, a gear, a figure and an archived box.
+Foundation symbols: branching version history, a padlock on a package, a gear with check mark, a document.
+Render exactly the following text, with no additional words, no gibberish code labels, no invented citations, no logos, no watermark:
+Top headline: "Delegate only what you can check"
+Stage 1 heading: "1  Plan"
+Stage 1 advice, separate lines:
+"Plan before code"
+"Model, parameters and units"
+"Decide the checks first"
+Stage 2 heading: "2  Implement"
+Stage 2 advice, separate lines:
+"Small, reviewable changes"
+"Clear context for the agent"
+"Read every diff"
+Stage 3 heading: "3  Validate"
+Stage 3 advice, separate lines:
+"Known answers and limiting cases"
+"Simulate and recover"
+"Seeded RNGs and tolerances"
+Stage 4 heading: "4  Reproduce"
+Stage 4 advice, separate lines:
+"One command: data to figures"
+"Record inputs and parameters"
+"Archive the exact version"
+Foundation band label: "FOUNDATIONS"
+Foundation labels:
+"Version control"
+"Locked environment"
+"Tests and automated checks"
+"README + agent instructions"
+Bottom sentence: "You own every line, whoever wrote it. Protect sensitive data."
+Text is the important content: use large sharp type, and make all advice equally readable. Avoid tiny captions, overcrowding, decorative badges, UI panels and photographic realism.
+
+Local refinement prompt 1:
+Use case: precise-object-edit.
+Make only these two small illustration corrections to the supplied infographic. Preserve ALL text character for character, typography, colours, all placements, foundation band, arrows, headline and conclusion. Preserve the 2:1 aspect ratio. Ideally output 3072 by 1536 pixels.
+1. In stage 2, remove the robot's eyes and every facial feature. The small AI assistant must be an abstract faceless device with a completely blank smooth head. Replace its pointing human-like hand with the simple tapered tip of its mechanical arm, directed toward the laptop. No drawn fingers, hands, eyes, mouth or face anywhere in the image. Keep the robot's small friendly body, antenna and existing location.
+2. On the left page of the notebook in stage 1, replace the four circular compartment nodes with simple rectangular boxes. Keep their positions, connections and navy/teal/orange fills. The compartment diagram and three ticked checklist lines must remain entirely unlabelled, with no words, letters, equations or handwriting.
+Change nothing else. In particular preserve the curve passing exactly through every navy reference dot and the green check mark inside the chart's top-right corner. Keep the foundation items completely unconnected. Do not add any symbols, text or objects.
+
+Local refinement prompt 2:
+Use case: precise-object-edit. One tiny local correction only. In stage 2 "Implement", the faceless AI assistant's raised left arm currently ends in a white pointing hand/finger shape above the laptop's right edge. Replace that entire raised arm including its tip with a simple straight slim mechanical rod ending in a small round teal cap, angled toward the laptop screen. The rod must be unambiguously a plain tool-like rod, with no elbow, wrist, finger, thumb or hand silhouette. Keep the same overall arm location and length. Leave the robot's completely blank featureless head unchanged. Do not change any other pixel region. Preserve all text exactly, the notebook's unlabelled rectangular compartment boxes, the reference curve and dots, the check inside the chart, foundation items, every colour and every layout position. Keep the 2:1 canvas and ideally output 3072 by 1536 pixels.
