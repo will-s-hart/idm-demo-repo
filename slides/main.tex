@@ -33,15 +33,13 @@
 \setbeamerfont{note page}{size=\footnotesize}
 
 % Section dividers: contents page with the current section highlighted
-% (\tocpage is provided by the bill theme), for every section after the first.
+% (\tocpage is provided by the bill theme), for every section including the first.
 % Sections are numbered by the theme, so \section titles below must NOT carry a
 % manual "N." prefix.
 \AtBeginSection[]{
-  \ifnum\value{section}>1
   \begin{frame}[noframenumbering]
     \tocpage
   \end{frame}
-  \fi
 }
 
 % ------------------------------------------------------------------------------------------
@@ -147,8 +145,8 @@
 % The icon order must match the order of the practice slides.
 \newcommand{\practicetracker}[1]{%
   \begin{tikzpicture}[remember picture, overlay]
-    \foreach \ic [count=\k] in {code-branch,boxes,vial,archive,broom,project-diagram,
-      laptop-code,spell-check,sync-alt}{%
+    \foreach \ic [count=\k] in {code-branch,boxes,vial,broom,project-diagram,
+      laptop-code,spell-check,sync-alt,archive}{%
       \ifnum\k=#1\relax\def\fc{oxfordblue}\def\tc{white}%
       \else\def\fc{oxtint}\def\tc{oxfordblue!45}\fi
       \node[circle, fill=\fc, text=\tc, minimum size=5.2mm, inner sep=0pt,
@@ -237,19 +235,9 @@
 
 \begin{frame}{This talk}
   \begin{itemize}
-    \item Our results are only as reliable as the code behind them.
     \item \textbf{Part 1:} practices and tools for reliable, reproducible code.
     \item \textbf{Part 2:} AI coding tools: uses, good habits and risks.
   \end{itemize}
-
-  \vspace{4mm}
-  \begin{tcolorbox}[enhanced, colback=oxtint, frame hidden, arc=1.5mm, left=3mm, right=3mm,
-      before skip=0pt, after skip=0pt]
-    \small
-    \meter{5}~~Importance for a typical IDM project (5 = essential for every project)\par
-    \vspace{1.5mm}
-    \pick{my choice}~\opt{alternatives}~~Tools for Python, R and Julia
-  \end{tcolorbox}
 
   \vspace{4mm}
   \begin{tcolorbox}[enhanced, colback=oxamber!12, frame hidden, arc=1.5mm, left=3mm,
@@ -271,10 +259,10 @@
   \begin{tikzpicture}[tile/.style={rounded corners=1.5mm, fill=oxtint, minimum width=46mm,
     minimum height=13mm}]
     \foreach \ic/\name/\sc [count=\k from 0] in {code-branch/Version control/5,
-      boxes/Environments/5, vial/Testing/4, archive/Archiving code/4,
-      broom/Formatting and linting/3, project-diagram/Workflow management/3,
-      laptop-code/Editor and debugger/3, spell-check/Type checking/2,
-      sync-alt/Continuous integration/2}{%
+      boxes/Environments/5, vial/Testing/4, broom/Formatting and linting/3,
+      project-diagram/Workflow management/3, laptop-code/Editor and debugger/3,
+      spell-check/Type checking/2, sync-alt/Continuous integration/2,
+      archive/Archiving code/2}{%
       \pgfmathsetmacro{\cx}{mod(\k,3)*49}\pgfmathsetmacro{\cy}{-int(\k/3)*16}
       \node[tile, anchor=north west] (t) at (\cx mm,\cy mm) {};
       \node[circle, fill=oxfordblue, text=white, minimum size=7mm, inner sep=0pt]
@@ -284,7 +272,15 @@
       \node[anchor=south west, inner sep=0pt] at ([xshift=11mm, yshift=2.2mm]t.south west)
       {\meter{\sc}};
     }
-  \end{tikzpicture}
+  \end{tikzpicture}\par
+  \vspace{4mm}
+  \begin{tcolorbox}[enhanced, colback=oxtint, frame hidden, arc=1.5mm, left=3mm, right=3mm,
+      before skip=0pt, after skip=0pt, before upper={\raggedright}]
+    \small
+    \meter{5}~~Importance for a typical IDM project (5 = essential for every project)\par
+    \vspace{1.5mm}
+    \pick{my choice}~\opt{alternatives}~~Tools for Python, R and Julia
+  \end{tcolorbox}
   \note[item]{} % Add notes here
 \end{frame}
 
@@ -345,8 +341,8 @@
       \item Test against known answers: analytic results, limiting cases,
         simulate-and-recover.
       \item Stochastic code: pass a seeded \texttt{rng} in; compare with tolerances.
-      \item Write the failing test first (TDD): ideal with agents.
-      \item Then refactor knowing nothing broke.
+      \item Test-driven development (TDD): write the failing test first. Ideal with agents.
+      \item Tests let you refactor knowing nothing broke.
     \end{itemize}
 
     \column{0.42\textwidth}\vspace{0pt}
@@ -367,35 +363,17 @@
   coverage.}
 \end{frame}
 
-\begin{frame}[t]{Archiving code}
-  \practicehead{archive}{4}{A permanent copy of the code behind each paper.}
-  \begin{columns}[t]
-    \column{0.54\textwidth}\vspace{0pt}
-    \begin{itemize}
-      \item Archive the exact version used for the paper.
-      \item A DOI keeps the paper's link permanent, even if the repo moves.
-      \item Zenodo's GitHub integration needs a public repo; otherwise upload the release by
-        hand.
-    \end{itemize}
-
-    \column{0.42\textwidth}\vspace{0pt}
-    \begin{toolpanel}
-      \toolrow{Archives}{\pick{Zenodo} \opt{Software Heritage} \opt{OSF}}
-    \end{toolpanel}
-  \end{columns}
-  \practicetracker{4}
-  \note[item]{Zenodo archives each GitHub release automatically once the repo is public, and
-  gives a citation if one is needed.}
-\end{frame}
-
 \begin{frame}[t]{Formatting and linting}
   \practicehead{broom}{3}{Consistent, bug-checked code for free.}
   \begin{columns}[t]
     \column{0.54\textwidth}\vspace{0pt}
     \begin{itemize}
-      \item Consistent style, with no effort or arguments.
-      \item Linters catch real bugs, e.g.\ undefined names, unused imports.
-      \item Runs on save, or after each agent edit (a hook: a command run automatically).
+      \item \textbf{Formatters} rewrite layout (spacing, line breaks) to one consistent style,
+        with no effort or arguments.
+      \item \textbf{Linters} flag likely bugs and bad patterns without running the code,
+        e.g.\ undefined names, unused imports.
+      \item Both run on save, or after each agent edit (a hook: a command run
+        automatically).
     \end{itemize}
 
     \column{0.42\textwidth}\vspace{0pt}
@@ -406,7 +384,7 @@
       \toolrow{Any}{\opt{pre-commit}}
     \end{toolpanel}
   \end{columns}
-  \practicetracker{5}
+  \practicetracker{4}
   \note[item]{ruff replaces black, isort and flake8 in one fast tool. pre-commit runs checks
   before each commit.}
 \end{frame}
@@ -428,7 +406,7 @@
       \toolrow{Simple}{\opt{pixi tasks}}
     \end{toolpanel}
   \end{columns}
-  \practicetracker{6}
+  \practicetracker{5}
   \note[item]{Snakemake works with any language, Julia included: each rule just runs a
   command.}
 \end{frame}
@@ -450,7 +428,7 @@
         \opt{Infiltrator.jl}}
     \end{toolpanel}
   \end{columns}
-  \practicetracker{7}
+  \practicetracker{6}
   \note[item]{Notebooks hide state and let cells run out of order; move code to scripts or
   the package once results depend on it.}
 \end{frame}
@@ -472,7 +450,7 @@
       \toolrow{R}{{\scriptsize\color{oxgrey}none mainstream}}
     \end{toolpanel}
   \end{columns}
-  \practicetracker{8}
+  \practicetracker{7}
   \note[item]{} % Add notes here
 \end{frame}
 
@@ -494,8 +472,29 @@
       \toolrow{Coverage}{\pick{Codecov}}
     \end{toolpanel}
   \end{columns}
-  \practicetracker{9}
+  \practicetracker{8}
   \note[item]{} % Add notes here
+\end{frame}
+
+\begin{frame}[t]{Archiving code}
+  \practicehead{archive}{2}{A permanent copy of the code behind each paper.}
+  \begin{columns}[t]
+    \column{0.54\textwidth}\vspace{0pt}
+    \begin{itemize}
+      \item A one-off step at publication: archive the exact version used for the paper.
+      \item A DOI keeps the paper's link permanent, even if the repo moves.
+      \item Zenodo's GitHub integration needs a public repo; otherwise upload the release by
+        hand.
+    \end{itemize}
+
+    \column{0.42\textwidth}\vspace{0pt}
+    \begin{toolpanel}
+      \toolrow{Archives}{\pick{Zenodo} \opt{Software Heritage} \opt{OSF}}
+    \end{toolpanel}
+  \end{columns}
+  \practicetracker{9}
+  \note[item]{Zenodo archives each GitHub release automatically once the repo is public, and
+  gives a citation if one is needed.}
 \end{frame}
 
 \begin{frame}{What goes in a repo}
@@ -531,6 +530,7 @@
       \begin{itemize}
         \item pixi $\to$ uv, conda \texttt{environment.yml}
         \item src layout (package under \texttt{src/}) $\to$ flat package
+        \item Top-level \texttt{scripts/} $\to$ \texttt{src/scripts/}
         \item Script pairs $\to$ notebooks
         \item Committed outputs $\to$ regenerate only
         \item Snakefile $\to$ pixi tasks, Make
@@ -566,8 +566,8 @@
       A repeated one-liner is fine.
     \item \textbf{One function per task:} \texttt{simulate\_outbreak}, \texttt{plot\_risk}.
       Pass seeds in, no hidden globals.
-    \item \textbf{Public vs private:} public functions are documented and tested;
-      \texttt{\_helpers} can change freely.
+    \item \textbf{Public vs private:} keep the interface others use small and stable;
+      helpers can change freely (in Python, mark them private: \texttt{\_helper}).
   \end{itemize}
   \note[item]{Separating analysis from plotting means figures can be tweaked without
   recomputing.}
@@ -576,27 +576,14 @@
 \begin{frame}{Documenting code}
   \begin{itemize}
     \item README: what it is, how to install it, how to reproduce the results.
-    \item Docstrings for public functions: purpose, arguments, returns.
+    \item Docstrings (roxygen comments in R): purpose, arguments, returns.
     \item Comments say \emph{why}, not \emph{what}.
-    \item Names say what things are, with units (\texttt{incubation\_days}).
+    \item Names say what things are (\texttt{incubation\_period}, not \texttt{ip}).
     \item No commented-out code: git remembers it.
     \item Doc websites only for shared packages: \pick{Sphinx} \opt{roxygen2 + pkgdown}
       \opt{Documenter.jl}
   \end{itemize}
-  \note[item]{Docstrings in Google or NumPy style.}
-\end{frame}
-
-\begin{frame}{Live demo: this repo}
-  \begin{demobox}
-    \begin{itemize}
-      \demoitem Layout, README and licence.
-      \demoitem \texttt{pyproject.toml} and \texttt{pixi.lock}.
-      \demoitem \texttt{pixi run format}, \texttt{lint}, \texttt{typecheck}, \texttt{test}.
-      \demoitem The Snakefile.
-      \demoitem \texttt{AGENTS.md} and the hooks.
-    \end{itemize}
-  \end{demobox}
-  \note[item]{} % Add notes here
+  \note[item]{Python docstrings in Google or NumPy style.}
 \end{frame}
 
 \begin{frame}{Further reading}
@@ -655,7 +642,7 @@
   \vspace{5mm}
   {\footnotesize
     \pick{Claude Code} {\color{oxgrey}terminal, VS Code, desktop, web}\quad
-    \opt{OpenAI Codex} {\color{oxgrey}CLI, IDE, cloud}\par
+    \pick{OpenAI Codex} {\color{oxgrey}CLI, IDE, cloud}\par
     \vspace{1mm}
   {\color{oxgrey}Also: GitHub Copilot (agent mode), Cursor, Gemini CLI.}\par}
   \note[item]{} % Add notes here
@@ -681,14 +668,7 @@
       \node[anchor=north, text width=4.2cm, align=left, font=\small,
       execute at begin node={\hyphenpenalty=10000}] at (\x,-0.8) {\desc};
     }
-    \draw[oxteal, line width=1.2pt, rounded corners=2mm] (4.6,1.0) rectangle (9.4,-2.9);
-    \node[fill=oxteal, text=white, font=\scriptsize\bfseries, rounded corners=1mm,
-    inner sep=1mm, anchor=east] at (9.4,1.0) {default};
   \end{tikzpicture}
-
-  \vspace{6mm}
-  \raggedright
-  Choose by how easily \emph{you} can check the result.
   \note[item]{Vibing is great for ``what does this data look like?''. Anything that ends up
   in a paper needs the middle or the right.}
 \end{frame}
@@ -714,7 +694,7 @@
     \tilestack{oxfordblue}{tags/Type hints and docstrings,
       exchange-alt/Renames across files,
       clone/New-but-similar sensitivity analyses,
-      compress-arrows-alt/Refactoring duplicated code,
+      compress-arrows-alt/Turning copy-paste into functions,
       arrow-circle-up/Updating for new library versions}
 
     \column{0.47\textwidth}\vspace{0pt}
@@ -805,10 +785,11 @@
   \begin{tcbraster}[raster columns=2, raster equal height=rows, raster column skip=4mm]
     \begin{infopanel}{oxamber}{\faIcon{user}~You decide, before any code}
       \begin{itemize}
-        \item The model and its assumptions.
-        \item Parameterisation and units (gamma: scale or rate?).
-        \item What correct output looks like: known answers and limiting cases, which
-          become your tests.
+        \item The model, its assumptions and the data.
+        \item Parameter values and priors, and their sources.
+        \item The fitting method and how to check it (e.g.\ MCMC diagnostics).
+        \item What correct output looks like: known answers and limiting cases (your
+          tests).
       \end{itemize}
       \vspace{1mm}
       {\color{oxgrey}Talk it through with the agent if you like; the decisions are yours.}
@@ -824,13 +805,13 @@
       \fix Verify independently: by hand, with SymPy, or numerically.
     \end{infopanel}
   \end{tcbraster}
-  \note[item]{Planning the science catches errors like gamma scale vs rate before they are
-  written.}
+  \note[item]{Anything left unspecified, the agent decides silently: a default prior, an
+  optimiser, a parameterisation.}
   \note[item]{E.g.\ ask it to derive the final size relation for your model, then check it
   with SymPy or against a simulation.}
 \end{frame}
 
-\begin{frame}{Plan first: agree the plan before any file changes}
+\begin{frame}{Plan mode: agree a plan before the agent edits}
   \centering
   \begin{tikzpicture}[node distance=4mm,
     ro/.style={stepbox, fill=oxtint, text=oxfordblue, text width=17mm, minimum height=12.5mm},
@@ -908,8 +889,8 @@
     \item Loaded only when used, so they can be long.
     \item \textbf{Make one} ``when you keep pasting the same instructions, checklist, or
       multi-step procedure into chat'' (within or across projects).
-    \item Examples: \texttt{research-repo-skeleton} set up this repo; \texttt{oxford-beamer}
-      set up this deck.
+    \item Examples: setting up a new project repo; making slides in a group template; a
+      checklist for adding an analysis.
     \item An open standard (\href{https://agentskills.io}{agentskills.io}), usable by other
       tools.
   \end{itemize}
@@ -947,17 +928,6 @@
   {\color{oxgrey}Names link to the Claude Code docs; most coding agents have equivalents.}
   \note[item]{In Claude Code, \texttt{/code-review} runs the fresh-context review, and auto
   mode (the default) has a classifier approve most actions; Manual mode asks first.}
-\end{frame}
-
-\begin{frame}{Live demo: Claude Code}
-  \begin{demobox}
-    \begin{itemize}
-      \demoitem Plan mode on a small task, following \texttt{AGENTS.md}.
-      \demoitem Hooks format and lint each edit.
-      \demoitem Review the diff, then undo with a checkpoint.
-    \end{itemize}
-  \end{demobox}
-  \note[item]{} % Add notes here
 \end{frame}
 
 \begin{frame}{Risks: correctness and skills}

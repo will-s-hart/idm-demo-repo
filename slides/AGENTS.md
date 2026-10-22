@@ -12,24 +12,23 @@ A LaTeX Beamer presentation: *"Software engineering practices and AI tools for r
 (William S Hart, Infectious Disease Modelling Group meeting, Mathematical Institute, Oxford,
 29 October 2026). The deliverable is [main.pdf](main.pdf), built from [main.tex](main.tex).
 
-A ~60-minute group-meeting talk including two live demos, in the formal structure: two
-sections with a contents divider before the second, and a Summary (no Acknowledgements).
+A ~60-minute group-meeting talk, in the formal structure: two sections, each opened by a
+contents divider, and a Summary (no Acknowledgements). There are no demo slides.
 
 1. **Practices and tooling:**
-   - a "Nine practices" overview;
+   - a "Nine practices" overview, with the key to the importance meter and tool chips;
    - one slide per practice, ordered by importance score;
    - "What goes in a repo" (a colour-coded tree of essential / good practice / my choice);
    - "Organising code" and "Documenting code";
-   - the repo demo and further reading.
+   - further reading.
 2. **AI tools:**
    - chat vs coding agents;
    - how much to delegate;
    - uses;
    - working with an agent (prompting, sessions);
    - plan the science before the code (what you decide, and AI's help with the maths);
-   - plan first (the agent's plan-review-implement loop), instruction files and skills;
+   - plan mode (the agent's plan-review-implement loop), instruction files and skills;
    - other useful features;
-   - the Claude Code demo;
    - two risk slides, and "You own every line, whoever wrote it";
    - a closing infographic with no frame title (it carries its own headline).
 
@@ -44,8 +43,7 @@ notes. Claude Code docs links stay as small references (`\docref`, `\doclink`).
 
 The repo around this folder is the worked example, shown live rather than excerpted or linked
 on the slides. Content is drafted and has been through a content and a design review. The
-title is a working title, the demo slides are checklists, and some speaker notes are empty
-stubs.
+title is a working title, and some speaker notes are empty stubs.
 
 ## Building
 
@@ -90,7 +88,8 @@ content. Leave it alone.
 - The footer shows the short title and short date: `\title[Short]{Full}`,
   `\date[1 January 2026]{Venue, 1 January 2026}`.
 - `\section{Title}` takes no manual "N." prefix, because the theme numbers sections. Every
-  section after the first opens with a contents divider.
+  section, the first included, opens with a contents divider (`\AtBeginSection` has no
+  section-number guard).
 - Left-align text. Centre images, but keep a caption that follows them left-aligned.
 - For a full-width image at frame level, use `\centerline{\includegraphics[...]{f}}`, never
   `{\centering ...\par}`, which silently drops the image in a vertically centred frame.
@@ -125,8 +124,9 @@ content. Leave it alone.
     `tcbraster`.
   - `infopanel{colour}{title}` is the general content panel (`\small`, coloured left edge and
     title), used on the plan slides.
-  - `promptbox{colour}{title}` is used for prompt examples, `scopecard` for the
-    instruction-file scopes, and `demobox` with `\demoitem` for the demo slides.
+  - `promptbox{colour}{title}` is used for prompt examples and `scopecard` for the
+    instruction-file scopes. `demobox` with `\demoitem` (a dark "terminal" panel) is kept
+    for demo slides but currently unused.
   - `\tileshead{colour}{title}{caption}` plus `\tilestack{colour}{icon/text, ...}` give a
     column of fixed-height, one-line icon tiles (the "Uses: grunt work" slide). Keep each
     text to one line, and brace any text that contains commas.
