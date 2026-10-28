@@ -1,6 +1,8 @@
 Generated with the built-in image_gen tool.
 Asset: summary.png
 
+Current asset: v4 (prompt recorded below).
+
 Use case: infographic-diagram
 Asset type: a single high-resolution landscape infographic to fill the body of the final "Summary" slide in an Oxford scientific computing talk. Generate a wide image with an aspect ratio approximately 2.35:1, ideally 3072 by 1312 pixels. All content must fit in the image.
 Audience: infectious disease modellers seeking immediately useful scientific computing and AI coding advice.
@@ -105,3 +107,41 @@ Change nothing else. In particular preserve the curve passing exactly through ev
 
 Local refinement prompt 2:
 Use case: precise-object-edit. One tiny local correction only. In stage 2 "Implement", the faceless AI assistant's raised left arm currently ends in a white pointing hand/finger shape above the laptop's right edge. Replace that entire raised arm including its tip with a simple straight slim mechanical rod ending in a small round teal cap, angled toward the laptop screen. The rod must be unambiguously a plain tool-like rod, with no elbow, wrist, finger, thumb or hand silhouette. Keep the same overall arm location and length. Leave the robot's completely blank featureless head unchanged. Do not change any other pixel region. Preserve all text exactly, the notebook's unlabelled rectangular compartment boxes, the reference curve and dots, the check inside the chart, foundation items, every colour and every layout position. Keep the 2:1 canvas and ideally output 3072 by 1536 pixels.
+
+
+v3
+==
+Edited from v2 with the built-in image_gen tool.
+Asset: summary.png
+Single headline; no bottom sentence. Two advice lines per stage.
+
+Use case: infographic-diagram.
+Asset type: closing slide infographic for an Oxford scientific computing talk.
+Input image: edit target and style reference, the existing summary infographic.
+Primary request: simplify and re-layout this infographic for clear projection, while retaining its four stages, distinctive illustrations, colour palette and overall visual style. Keep a wide 2:1 canvas, ideally 3072 by 1536 pixels, with a pure white background. Use only one headline at the top. Remove the ENTIRE orange bottom sentence, including both "You own every line..." and "Protect sensitive data". Do not replace it with another concluding sentence. Use the freed space for larger, clearer text and comfortable spacing, without huge empty margins.
+Composition: top headline, then four equally spaced stages with numbered headings, illustrations and exactly TWO short left-aligned advice lines each. A continuous pale-blue foundation band below holds four unconnected symbol-and-label pairs. The band is the bottom of the composition. Enlarge secondary text compared with the original; use clear regular-width sans-serif text rather than tightly condensed lettering. No shadows on text.
+Preserve the illustrations' meaning: Plan is an open notebook with unlabelled rectangular compartment boxes and a checklist. Implement is a laptop with abstract code strokes and a small faceless robot whose plain mechanical rod ends in a round teal cap; no eyes, mouth, fingers or hands. Validate is a teal curve passing through navy reference dots with a green check inside the chart corner. Reproduce is a data file, gear, figure and archive box. Preserve navy #002147, teal #00798C, pale blue #E8EEF5, orange #E67E22 as a small accent and green #208E4C. Three identical teal arrows connect the four stages.
+Render exactly this text and no additional words:
+Headline: "Delegate only what you can check"
+Stage 1 heading: "1  Plan"
+Stage 1 lines: "Model, assumptions and units" / "Choose independent checks"
+Stage 2 heading: "2  Implement"
+Stage 2 lines: "Small, reviewable changes" / "Read every diff"
+Stage 3 heading: "3  Validate"
+Stage 3 lines: "Known answers and limiting cases" / "Check numerical accuracy"
+Stage 4 heading: "4  Reproduce"
+Stage 4 lines: "Record data and parameters" / "Rebuild and archive results"
+Foundation band label: "FOUNDATIONS"
+Foundation labels: "Version control" / "Recorded environment" / "Automated checks" / "README + agent instructions"
+No bottom slogan, no privacy or sensitive-data text, no additional text, no logos, no watermark. All text must fit legibly.
+
+
+v4
+==
+Headline-only edit with the built-in image_gen tool.
+Asset: summary.png
+
+Use case: text-localization.
+Input image: edit target, the closing infographic.
+Make exactly one change: replace the large navy headline "Delegate only what you can check" at the top with "You own every line, whoever wrote it".
+Keep the new headline centred on one line, in the same bold navy sans-serif style; reduce its size only enough to fit comfortably within the existing margins. Preserve every other word and illustration exactly: the four stages, all advice lines, every foundation label, all positions below the headline, the pure white background, colours, spacing, aspect ratio and dimensions. Do not add a second headline or bottom sentence. The small robot must remain faceless with a plain rod arm, the notebook diagram remains unlabelled rectangular boxes, and the validation curve passes through its reference dots. No other edits.
