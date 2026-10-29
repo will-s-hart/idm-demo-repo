@@ -1,0 +1,14 @@
+model,quantity,ess_bulk,ess_tail,r_hat
+independent,generation_time_mean,2966,2945,1.001
+independent,generation_time_sd,2175,2850,1.001
+independent,beta0,4117,4178,1
+independent,presymptomatic_proportion,1969,2773,1.002
+independent,log_likelihood,2882,3242,1.002
+mechanistic,latent_fraction,2498,2473,1.001
+mechanistic,symptomatic_period,3714,3777,1
+mechanistic,alpha_p,3183,3564,1.001
+mechanistic,beta0,3950,3856,0.9995
+mechanistic,generation_time_mean,3610,3712,1
+mechanistic,generation_time_sd,3878,3714,1
+mechanistic,presymptomatic_proportion,3432,3803,1.001
+mechanistic,log_likelihood,3127,3434,1

@@ -5,7 +5,18 @@ modelling group on software engineering practices and AI tool use in research co
 repository itself illustrates the layout and tooling set-up the talk describes; the slides are
 in [`slides/`](slides/).
 
-This project is at an early stage: the skeleton contains no analyses yet.
+## Analyses
+
+- **`generation_time`**: an independent reproduction of Fig. 1 of Hart et al., "Inference of
+  the SARS-CoV-2 generation time using UK household data", *eLife* 11:e70767 (2022),
+  [doi:10.7554/eLife.70767](https://doi.org/10.7554/eLife.70767). It fits the paper's two
+  models of infectiousness (independent transmission and symptoms, and a mechanistic
+  latent/presymptomatic/symptomatic stage model) to the UK household study data in
+  [`data/`](data/). It uses the paper's likelihood and priors, but a different
+  (data-augmentation MCMC) sampler written in [JAX](https://docs.jax.dev/). Posterior
+  summaries, set beside the paper's estimates, are in
+  [`results/generation_time/summary.csv`](results/generation_time/summary.csv) and the figure
+  is [`figures/generation_time/posterior_violins.svg`](figures/generation_time/posterior_violins.svg).
 
 ## Installation
 
@@ -34,6 +45,9 @@ Alternatively, the full pipeline for all results and figures can be run with
 ```bash
 pixi run snakemake --cores 1 --forceall
 ```
+
+This takes about 2 minutes on a 10-core laptop, almost all of it MCMC (chains run in parallel,
+one per core).
 
 ## Slides
 

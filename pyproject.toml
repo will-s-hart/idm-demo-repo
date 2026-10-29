@@ -13,10 +13,20 @@ channels = ["conda-forge", "bioconda"]
 platforms = ["linux-64", "linux-aarch64", "osx-arm64", "osx-64", "win-64"]
 
 [tool.pixi.dependencies]
+arviz = "*"
 matplotlib = "*"
 numpy = "*"
+openpyxl = "*"
 pandas = "*"
 scipy = "*"
+tqdm = "*"
+
+# conda-forge has no win-64 jaxlib, so Windows takes jax from PyPI instead.
+[tool.pixi.target.unix.dependencies]
+jax = "*"
+
+[tool.pixi.target.win-64.pypi-dependencies]
+jax = "*"
 
 [tool.pixi.pypi-dependencies]
 idmdemo = { path = ".", editable = true }

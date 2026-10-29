@@ -10,21 +10,26 @@ group on software engineering practices and AI tool use. The repo illustrates th
 tooling for research code: a library package drives a Snakemake workflow that produces the
 numerical results and figures. The Beamer deck in `slides/` is the talk itself.
 
-**Status: skeleton only.** There is no library code, analysis or Snakemake rule yet. The deck
-is drafted (see `slides/AGENTS.md`). Keep this file in step as code lands: describe what
-exists, not what is planned.
+**Status:** one analysis, `generation_time` (see Analyses). The deck is drafted (see
+`slides/AGENTS.md`). Keep this file in step as code lands: describe what exists, not what is
+planned.
 
 ## Layout
 
 - `src/idmdemo/` — library package (src layout, installed editable by pixi, so edits take
   effect immediately). `__init__.__all__` is the public API. Modules lead with their public
   functions; private `_helpers` sit below them. Keep imports between modules one-way, with no
-  cycles.
+  cycles. Modules: `households` (load the household study data, apply exclusions, flatten to
+  arrays) and `models` (infectiousness models: profiles, priors, derived summaries), both used
+  by `likelihood` (household likelihood given augmented infection/onset times), used in turn by
+  `mcmc` (data-augmentation MCMC).
 - `scripts/` — analysis + plot script pairs plus shared `inputs.py` (see below). A package at
   the repo root, **not** under `src/`.
 - `tests/` — top-level pytest suite (not nested under the package).
 - `Snakefile` — orchestrates the full results-and-figures pipeline.
-- `data/` — inputs. `results/`, `figures/` — generated outputs, committed.
+- `data/` — inputs: `hart_elife_data.xlsx` (the household study data, as published with Hart
+  et al. 2022) and `hart2022_estimates.csv` (that paper's estimates, for comparison).
+  `results/`, `figures/` — generated outputs, committed.
 - `slides/` — the talk: a Beamer deck in the amended Oxford Maths theme (`bill`), with its own
   `AGENTS.md` for slide conventions. `main.tex` and the compiled `main.pdf` are committed;
   `slides/.gitignore` ignores the build files. Built by hand with system TeX, not by pixi or
@@ -47,7 +52,7 @@ commands** — wire them in as rules.
   `<name>_plots` rule running `pixi run python -m scripts.<name>_plots`.
 - Every rule lists `shared_input_paths` (all package modules, globbed) plus its own script(s),
   data files and upstream results as inputs, so a change to shared code triggers a rebuild.
-  Once `scripts/inputs.py` exists, add it to `shared_input_paths`.
+  `shared_input_paths` also includes `scripts/inputs.py`.
 - Add each analysis's output paths to the `results_paths` / `figure_paths` aggregates.
 
 ## Analysis vs plotting convention
@@ -73,6 +78,27 @@ Every analysis is a **script pair**: `scripts/<name>.py` does the heavy compute,
 
 To add an analysis: write the script pair, add `get_inputs_<name>()` to `inputs.py`, and add
 `<name>_results` + `<name>_plots` rules to the Snakefile.
+
+## Analyses
+
+- `generation_time`: an independent reproduction (not using the authors' code) of Fig. 1 of
+  Hart et al., "Inference of the SARS-CoV-2 generation time using UK household data", eLife
+  2022. It fits the independent transmission/symptoms and mechanistic (E/P/I) models to the
+  household data, with the paper's likelihood, priors and fixed parameters, and plots
+  posterior violins of the generation time mean and SD, presymptomatic proportion and β0.
+  `summary.csv` sets the estimates beside the paper's. Takes about 2 minutes on a 10-core
+  laptop.
+  - Modelling choices the paper leaves open: a positive PCR test bounds infection time by the
+    end of that day; household size `n` is the `householdsize` column, so unknown-status and
+    unlisted members count (this reproduces the paper's 587 individuals).
+  - Inference differs from the paper's: Metropolis-within-Gibbs in JAX that updates every
+    household member's augmented times each sweep (vectorised across households), with
+    adaptive proposals and parallel chains. NUTS is not an option, as a single introduction
+    gives zero density at near-simultaneous first and second infections, which splits the
+    posterior by primary case. NUTS for the parameters alone wouldn't beat several cheap
+    random-walk updates per sweep (`n_param_steps`, 10), and JAX has no `betainc` gradient
+    with respect to its shape parameters. Mixing is limited by the coupling between
+    parameters and augmented data.
 
 ## Tests
 
@@ -106,6 +132,13 @@ Run format, lint and typecheck after code changes.
   purpose, so don't add other config.
 - New dependencies go in `pyproject.toml` (conda-forge first, `pypi-dependencies` only if
   needed; dev-only tools in the `dev` feature). Commit the updated `pixi.lock`.
+- The package enables JAX double precision (`jax_enable_x64`) globally on import.
+- MCMC chains are split across JAX devices. The `generation_time` script sets one CPU device
+  per core (`jax_num_cpu_devices`) in its `__main__` block, since this must happen before JAX
+  first computes. Results don't depend on the number of devices; only the speed does.
+- jax comes from conda-forge, except on win-64 (no conda-forge jaxlib), where it comes from
+  PyPI. With no CPU jaxlib for Python 3.14 on conda-forge linux-64, that platform resolves to
+  Python 3.13.
 - matplotlib SVG output is non-deterministic (run-varying IDs, float noise), so `git diff
   figures/` can't show whether a plotting change preserved the output. Check by running the
   plot script and looking at the figure.

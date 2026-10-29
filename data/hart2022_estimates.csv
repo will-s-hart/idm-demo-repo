@@ -1,0 +1,12 @@
+model,quantity,estimate,lower,upper,source
+independent,generation_time_mean,4.2,3.3,5.3,Results text; Appendix 1-table 2
+independent,generation_time_sd,4.9,3.0,8.3,Results text; Appendix 1-table 2
+independent,presymptomatic_proportion,0.72,0.63,0.80,Results text
+independent,beta0,1.7,1.4,1.9,Appendix 1-table 2
+mechanistic,latent_fraction,0.2,0.03,0.5,Appendix 1-table 3
+mechanistic,symptomatic_period,5.0,3.2,7.5,Appendix 1-table 3
+mechanistic,alpha_p,3.1,1.2,6.9,Appendix 1-table 3
+mechanistic,generation_time_mean,5.9,5.2,7.0,Results text
+mechanistic,generation_time_sd,4.8,4.0,6.3,Results text
+mechanistic,presymptomatic_proportion,0.73,0.61,0.83,Results text
+mechanistic,beta0,1.8,1.5,2.1,Appendix 1-table 3
