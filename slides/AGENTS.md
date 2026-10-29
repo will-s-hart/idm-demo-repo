@@ -26,7 +26,8 @@ contents divider, and a Summary (no Acknowledgements). There are no demo slides.
 2. **AI tools:**
    - chat vs coding agents;
    - how much to delegate (you write on the left, full vibe on the right);
-   - plan the science before the code (what you decide, and AI's help with the maths);
+   - plan the science before the code (make scientific choices explicit and record an agreed
+     specification; AI can help develop it);
    - uses;
    - prompting, planning with an agent, then sessions and context;
    - instruction files and skills;
@@ -43,14 +44,22 @@ There is no separate ownership slide. "This talk" includes an explicit AI-assist
 disclaimer asking the audience to check advice against documentation and their project's needs.
 
 The running example varies R0 and computes and plots the final size (fraction ever infected)
-in an SIR model. The AI testing slide uses the no-transmission limit as an independent check (final
-size includes initial infections; no initial recovered population or imported infections).
-The prompting example corrects fractions shown on a percentage axis. Workflow advice also
-covers input provenance and data validation.
+in an SIR model. The AI checking and testing slide shows two example agent requests: review
+an implementation against a model description and report concrete findings without editing;
+inspect an existing module and suite, add missing unit tests, run them and show the results.
+The prompting example specifies the symptom, file, expected display, unchanged saved units
+and regenerated figure, following the linked best-practices guide. Workflow advice focuses on
+explicit dependencies, rerunning affected steps and running jobs on HPC clusters. Documentation advice
+explicitly discourages commented-out code. The correctness risks include weak tests and gaming
+the checks.
 
 Scores describe personal adoption priorities for a typical analysis repo. Formal testing
-stays at 4: basic scientific checks are essential. Editor and debugger is also 4, immediately
-after formal testing. An environment specification is essential;
+stays at 4: basic scientific checks are essential. Its slide focuses on known answers, edge
+cases, important rules and tests that prevent fixed bugs from returning; RNG details and TDD
+are in the speaker notes. Editor and debugger is 5, immediately
+before formal testing. Its score is for using a capable editor; learning debugger features is
+a useful next step. The editor slide also covers reviewing and editing agents' changes.
+An environment specification is essential;
 a lockfile is good practice, not mandatory. CI and archiving have context-specific ratings.
 Tool panels retain options across Python, R and Julia; outlined chips include complementary
 tools as well as alternatives. Repo-layout alternatives are in the speaker notes.
