@@ -4,6 +4,7 @@ Times are in days relative to the date the household's index case was swabbed (a
 positive), matching the `case_swab_*` columns of the study data.
 """
 
+import itertools
 from pathlib import Path
 from typing import NamedTuple
 
@@ -20,8 +21,8 @@ class HouseholdData(NamedTuple):
 
     Arrays prefixed per-infected have one entry per infected individual, grouped by household
     and ordered by `slot` within it. Per-household arrays have one entry per household. Pair
-    arrays list every ordered (source, target) pair of distinct infected individuals in the
-    same household, as indices into the per-infected arrays.
+    arrays list every unordered pair of distinct infected individuals in the same household
+    (once, with `pair_i < pair_j`), as indices into the per-infected arrays.
     """
 
     household: AnyArray  # per-infected: household index (0, ..., M - 1)
@@ -34,8 +35,8 @@ class HouseholdData(NamedTuple):
     household_size: AnyArray
     n_uninfected: AnyArray  # per-household: members known to have remained uninfected
     household_id: AnyArray  # per-household: identifier in the study data
-    pair_source: AnyArray  # per-pair: index of potential infector
-    pair_target: AnyArray  # per-pair: index of potential infectee
+    pair_i: AnyArray  # per-pair: index of one member
+    pair_j: AnyArray  # per-pair: index of the other
 
 
 def load_household_data(path: str | Path, max_onset_gap: float) -> pd.DataFrame:
@@ -92,15 +93,14 @@ def prepare_household_data(df: pd.DataFrame) -> HouseholdData:
     slot = infected.groupby("household").cumcount().to_numpy()
     symptomatic = infected["symptomatic"].to_numpy()
 
-    sources, targets = [], []
-    for members in np.split(
-        np.arange(len(infected)), np.flatnonzero(np.diff(household)) + 1
-    ):
-        for j in members:
-            for k in members:
-                if j != k:
-                    sources.append(j)
-                    targets.append(k)
+    pairs = [
+        pair
+        for members in np.split(
+            np.arange(len(infected)), np.flatnonzero(np.diff(household)) + 1
+        )
+        for pair in itertools.combinations(members, 2)
+    ]
+    pair_i, pair_j = np.array(pairs, dtype=int).reshape(-1, 2).T
 
     return HouseholdData(
         household=household,
@@ -113,8 +113,8 @@ def prepare_household_data(df: pd.DataFrame) -> HouseholdData:
         .agg(lambda s: (s == "uninfected").sum())
         .to_numpy(dtype=float),
         household_id=household_id,
-        pair_source=np.array(sources, dtype=int),
-        pair_target=np.array(targets, dtype=int),
+        pair_i=pair_i,
+        pair_j=pair_j,
     )
 
 

@@ -73,4 +73,4 @@ def test_runs_on_study_data(independent):
     for draws in [*result.params.values(), result.log_likelihood]:
         assert draws.shape == (2, 5)
         assert np.isfinite(draws).all()
-    assert set(result.acceptance) == {"params", "infection_time", "onset_time"}
+    assert set(result.acceptance) == {"params", "latent_times"}

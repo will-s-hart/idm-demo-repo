@@ -95,8 +95,8 @@ def test_invariant_to_member_order(households, model_name, request):
                 "infection_time_max",
             )
         },
-        pair_source=inverse[households.pair_source],
-        pair_target=inverse[households.pair_target],
+        pair_i=inverse[households.pair_i],
+        pair_j=inverse[households.pair_j],
     )
     permuted_latent = LatentTimes(latent.infection_time[perm], latent.onset_time[perm])
     np.testing.assert_allclose(

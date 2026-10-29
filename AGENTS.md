@@ -86,7 +86,7 @@ To add an analysis: write the script pair, add `get_inputs_<name>()` to `inputs.
   2022. It fits the independent transmission/symptoms and mechanistic (E/P/I) models to the
   household data, with the paper's likelihood, priors and fixed parameters, and plots
   posterior violins of the generation time mean and SD, presymptomatic proportion and β0.
-  `summary.csv` sets the estimates beside the paper's. Takes about 2 minutes on a 10-core
+  `summary.csv` sets the estimates beside the paper's. Takes under a minute on a 10-core
   laptop.
   - Modelling choices the paper leaves open: a positive PCR test bounds infection time by the
     end of that day; household size `n` is the `householdsize` column, so unknown-status and
@@ -96,9 +96,10 @@ To add an analysis: write the script pair, add `get_inputs_<name>()` to `inputs.
     adaptive proposals and parallel chains. NUTS is not an option, as a single introduction
     gives zero density at near-simultaneous first and second infections, which splits the
     posterior by primary case. NUTS for the parameters alone wouldn't beat several cheap
-    random-walk updates per sweep (`n_param_steps`, 10), and JAX has no `betainc` gradient
+    random-walk updates per sweep (`n_param_steps`, 5), and JAX has no `betainc` gradient
     with respect to its shape parameters. Mixing is limited by the coupling between
-    parameters and augmented data.
+    parameters and augmented data: more parameter updates or augmented-data passes per sweep
+    barely raise ESS per sweep, so the sampler aims to make each sweep cheap.
 
 ## Tests
 

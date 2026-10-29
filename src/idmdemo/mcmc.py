@@ -3,8 +3,9 @@
 The sampler is Metropolis-within-Gibbs over the model parameters and the augmented data
 (infection times and precise onset times). Parameters are updated by adaptive random-walk
 Metropolis on the unconstrained scale. Augmented data are updated one household member slot at
-a time; since households are independent given the parameters, each slot's proposals are
-accepted or rejected household by household, all households at once. Chains run in parallel
+a time, with a joint proposal of each member's infection and onset times; since households are
+independent given the parameters, each slot's proposals are accepted or rejected household by
+household, all households at once. Chains run in parallel
 (vectorised) and proposal scales adapt during warm-up only.
 """
 
@@ -45,10 +46,9 @@ def fit_household_model(
     """Sample the posterior of `model`'s parameters given household data.
 
     Each chain runs `n_warmup` adaptive sweeps and then `n_draws * thin` sweeps, keeping every
-    `thin`-th. A sweep is `n_param_steps` parameter updates and, for every household member
-    slot, one infection-time update and one onset-time update. Several parameter updates per
-    sweep cost one likelihood evaluation each (a slot update costs two) and offset the
-    parameters' slow random-walk mixing given the augmented data. Chains run in parallel
+    `thin`-th. A sweep is `n_param_steps` parameter updates and one augmented-data update for
+    every household member slot, each costing one likelihood evaluation. Several parameter
+    updates per sweep offset the parameters' slow random-walk mixing given the augmented data. Chains run in parallel
     across the available devices. If `progress` is true, a progress bar of sweeps completed is
     shown.
     """
@@ -128,13 +128,13 @@ class _State(NamedTuple):
     u_log_scale: jax.Array
     u_mean: jax.Array
     u_cov: jax.Array
-    infection_log_scale: jax.Array
-    shift_log_scale: jax.Array
+    latent_log_scale: jax.Array
     n_adapted: jax.Array
 
 
 _SWEEPS_PER_CHUNK = 100
-_TARGET_ACCEPTANCE = {"params": 0.3, "infection_time": 0.3, "onset_time": 0.3}
+# Targets near the optima for random-walk proposals in several dimensions and in one.
+_TARGET_ACCEPTANCE = {"params": 0.3, "latent_times": 0.44}
 
 
 class _Sampler:
@@ -201,8 +201,7 @@ class _Sampler:
             u_log_scale=jnp.array(0.0),
             u_mean=u,
             u_cov=0.01 * jnp.eye(n_params),
-            infection_log_scale=jnp.zeros(shape),
-            shift_log_scale=jnp.zeros(shape),
+            latent_log_scale=jnp.zeros(shape),
             n_adapted=jnp.array(10.0),  # weight of the initial covariance guess
         )
 
@@ -251,36 +250,23 @@ class _Sampler:
             state = self.adapt_params(state, params_acceptance)
 
         def update_slot(slot, carry):
-            state, n_infection_accepted, n_onset_accepted = carry
-            slot_key = jax.random.fold_in(latent_key, slot)
-            infection_key, onset_key = jax.random.split(slot_key)
-            in_slot = self.data.slot == slot
-            state, infection_accepted = self.update_infection_times(
-                state, infection_key, in_slot, adapt=adapt
-            )
-            state, onset_accepted = self.update_onset_times(
-                state, onset_key, in_slot, adapt=adapt
-            )
-            return (
+            state, n_latent_accepted = carry
+            state, accepted = self.update_latent_times(
                 state,
-                n_infection_accepted + infection_accepted.sum(),
-                n_onset_accepted + onset_accepted.sum(),
+                jax.random.fold_in(latent_key, slot),
+                self.data.slot == slot,
+                adapt=adapt,
             )
+            return state, n_latent_accepted + accepted.sum()
 
-        state, n_infection_accepted, n_onset_accepted = jax.lax.fori_loop(
-            0, self.n_slots, update_slot, (state, 0, 0)
+        state, n_latent_accepted = jax.lax.fori_loop(
+            0, self.n_slots, update_slot, (state, 0)
         )
         if adapt:
             state = state._replace(n_adapted=state.n_adapted + 1)
-        symptomatic = self.data.symptomatic
-        n_onset_proposed = (
-            symptomatic.sum()
-            + self.model.asymptomatic_incubation * (~symptomatic).sum()
-        )
         stats = {
             "params": params_acceptance,
-            "infection_time": n_infection_accepted / symptomatic.shape[0],
-            "onset_time": n_onset_accepted / n_onset_proposed,
+            "latent_times": n_latent_accepted / self.data.slot.shape[0],
         }
         return state, stats
 
@@ -319,14 +305,26 @@ class _Sampler:
             / (state.n_adapted + 1),
         )
 
-    def update_infection_times(self, state, key, in_slot, *, adapt):
-        normal_key, accept_key = jax.random.split(key)
-        t = state.latent.infection_time
-        step = jnp.exp(state.infection_log_scale) * jax.random.normal(
-            normal_key, t.shape
+    def update_latent_times(self, state, key, in_slot, *, adapt):
+        # Random-walk infection times, with a fresh onset time within the recorded day for
+        # symptomatic hosts. Asymptomatic hosts with an incubation period either keep the end of
+        # incubation or shift it along with infection, chosen at random (a mixture of two
+        # symmetric proposals).
+        normal_key, uniform_key, shift_key, accept_key = jax.random.split(key, 4)
+        t, t_onset = state.latent
+        step = jnp.exp(state.latent_log_scale) * jax.random.normal(normal_key, t.shape)
+        shift = (
+            ~self.data.symptomatic
+            & self.model.asymptomatic_incubation
+            & jax.random.bernoulli(shift_key, shape=t.shape)
         )
-        latent_prop = state.latent._replace(
-            infection_time=jnp.where(in_slot, t + step, t)
+        latent_prop = LatentTimes(
+            infection_time=jnp.where(in_slot, t + step, t),
+            onset_time=jnp.where(
+                in_slot & self.data.symptomatic,
+                self.data.onset_day + jax.random.uniform(uniform_key, t.shape),
+                jnp.where(in_slot & shift, t_onset + step, t_onset),
+            ),
         )
         state, accepted = self._accept_per_household(
             state, accept_key, latent_prop, in_slot
@@ -334,38 +332,8 @@ class _Sampler:
         if adapt:
             rate = _adaptation_rate(state.n_adapted)
             state = state._replace(
-                infection_log_scale=state.infection_log_scale
-                + in_slot * rate * (accepted - _TARGET_ACCEPTANCE["infection_time"])
-            )
-        return state, accepted
-
-    def update_onset_times(self, state, key, in_slot, *, adapt):
-        # Symptomatic hosts: redraw the onset time uniformly within the recorded day.
-        # Asymptomatic hosts (if the model gives them an incubation period): shift infection and
-        # end of incubation together; infection-time updates alone change the incubation period.
-        uniform_key, normal_key, accept_key = jax.random.split(key, 3)
-        t, t_onset = state.latent
-        redraw = in_slot & self.data.symptomatic
-        shift = in_slot & ~self.data.symptomatic & self.model.asymptomatic_incubation
-        shift_step = jnp.exp(state.shift_log_scale) * jax.random.normal(
-            normal_key, t.shape
-        )
-        latent_prop = LatentTimes(
-            infection_time=jnp.where(shift, t + shift_step, t),
-            onset_time=jnp.where(
-                redraw,
-                self.data.onset_day + jax.random.uniform(uniform_key, t.shape),
-                jnp.where(shift, t_onset + shift_step, t_onset),
-            ),
-        )
-        state, accepted = self._accept_per_household(
-            state, accept_key, latent_prop, redraw | shift
-        )
-        if adapt:
-            rate = _adaptation_rate(state.n_adapted)
-            state = state._replace(
-                shift_log_scale=state.shift_log_scale
-                + shift * rate * (accepted - _TARGET_ACCEPTANCE["onset_time"])
+                latent_log_scale=state.latent_log_scale
+                + in_slot * rate * (accepted - _TARGET_ACCEPTANCE["latent_times"])
             )
         return state, accepted
 

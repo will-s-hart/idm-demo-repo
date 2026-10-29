@@ -46,8 +46,8 @@ Alternatively, the full pipeline for all results and figures can be run with
 pixi run snakemake --cores 1 --forceall
 ```
 
-This takes about 2 minutes on a 10-core laptop, almost all of it MCMC (chains run in parallel,
-one per core).
+This takes under a minute on a 10-core laptop, mostly MCMC (chains run in parallel, one per
+core).
 
 ## Slides
 

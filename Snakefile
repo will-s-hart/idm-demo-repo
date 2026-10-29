@@ -29,7 +29,7 @@ rule results:
 
 
 # Fits the independent and mechanistic infectiousness models to the UK household study data
-# (Hart et al., eLife 2022, Fig. 1). Takes about 2 minutes.
+# (Hart et al., eLife 2022, Fig. 1). Takes under a minute.
 rule generation_time_results:
     input:
         shared_input_paths,

@@ -66,5 +66,4 @@ def test_prepare_household_data():
     np.testing.assert_array_equal(data.symptomatic, [True, True, True, False])
     np.testing.assert_array_equal(data.onset_day, [-1.0, -2.0, 3.0, np.nan])
     np.testing.assert_array_equal(data.infection_time_max, [1.0, 1.0, np.inf, 9.0])
-    pairs = set(zip(data.pair_source, data.pair_target))
-    assert pairs == {(1, 2), (1, 3), (2, 1), (2, 3), (3, 1), (3, 2)}
+    assert set(zip(data.pair_i, data.pair_j)) == {(1, 2), (1, 3), (2, 3)}

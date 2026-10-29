@@ -41,7 +41,10 @@ def household_log_likelihood(
     weight = jnp.where(data.symptomatic, 1.0, model.alpha_asymptomatic)
     scale = weight * params["beta0"] / data.household_size[data.household]
 
-    source, target = data.pair_source, data.pair_target
+    # Only the member of each pair infected first can have infected the other.
+    i_first = t[data.pair_i] <= t[data.pair_j]
+    source = jnp.where(i_first, data.pair_i, data.pair_j)
+    target = jnp.where(i_first, data.pair_j, data.pair_i)
     lag = t[target] - t[source]
     force = segment_sum(
         scale[source] * model.infectiousness(lag, tau_inc[source], params),

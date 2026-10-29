@@ -51,11 +51,11 @@ def get_inputs_generation_time() -> dict:
         "models": models,
         "mcmc_settings": {
             "seed": 2022,
-            "n_chains": 8,
-            "n_warmup": 5000,
-            "n_draws": 500,
+            "n_chains": 10,
+            "n_warmup": 2000,
+            "n_draws": 400,
             "thin": 25,
-            "n_param_steps": 10,
+            "n_param_steps": 5,
         },
         "paper_estimates": pd.read_csv(DATA_DIR / "hart2022_estimates.csv"),
         "results_paths": {
